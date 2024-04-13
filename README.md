@@ -19,7 +19,7 @@ VideoSqueeze CLI is a simple JavaScript project that compresses a given video by
 To install VideoSqueezer CLI, you have two options:
 
 ### Option 1: Windows Release
-1. Download the [Windows release](https://www.google.com).
+1. Download the [Windows release](https://github.com/CuzImAzizx/VideoSqueeze-CLI/releases/tag/v1.0.0).
 2. Extract the downloaded archive.
 3. Open the extracted folder and locate the `VideoSqueezeCLI.exe` file.
 4. Double-click on `VideoSqueezeCLI.exe` to launch the CLI tool.
