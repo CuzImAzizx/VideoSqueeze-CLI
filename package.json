@@ -1,0 +1,23 @@
+{
+  "name": "videosqueeze-cli",
+  "version": "1.0.0",
+  "description": "Tool that compresses your videos using ffmpeg",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node main.js"
+  },
+  "keywords": [],
+  "author": "CuzImAzizx",
+  "license": "MIT",
+  "dependencies": {
+    "@ffmpeg-installer/ffmpeg": "^1.1.0",
+    "@ffprobe-installer/ffprobe": "^2.1.2",
+    "bytes": "^3.1.2",
+    "fluent-ffmpeg": "^2.1.2",
+    "log-update": "^4.0.0",
+    "prompt-sync": "^4.2.0",
+    "seconds-formater": "^2.0.3"
+  },
+  "devDependencies": {}
+}

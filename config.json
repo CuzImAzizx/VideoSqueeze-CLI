@@ -1,0 +1,9 @@
+{
+  "PathToFfmpegForExe": "./ffmpeg/bin/ffmpeg.exe",
+  "PathToFfprobeForExe": "./ffmpeg/bin/ffprobe.exe",
+  "compressionPath": "./compressed_videos",
+  "numberOfThreads": 0,
+  "ffmpegCodec": "libx264",
+  "compressAudioToo": false,
+  "compressionPreset": "faster"
+}
