@@ -276,7 +276,19 @@ Error: ${path.basename(videoPathAndName)} is not a video. returning..
 Got the video! Here's some information about your video:
 Name: ${toBeCompressedVideoDetails.name}
 Size: ${bytes(toBeCompressedVideoDetails.size)}
-Duration: ${sf.convert(toBeCompressedVideoDetails.duration).format()}
+Duration: ${
+/*
+This shitty library raise an error when passed some wrong values:
+```
+Error: The value should be integer number!
+at F.validateTheValue (/VideoSqueeze-CLI/node_modules/seconds-formater/dist/index.umd.js:1:2024)
+```
+works only with `.mp4` and not `.mkv`.
+`toBeCompressedVideoDetails.duration` is a value returned from ffprobe. check the function `getVideoinfo()`
+*/
+//sf.convert(toBeCompressedVideoDetails.duration).format()
+null
+}
 location: ${path.resolve(videoPathAndName)}
 Date Created: ${toBeCompressedVideoDetails.dateCreated}
 Resolution: ${toBeCompressedVideoDetails.resolution}
