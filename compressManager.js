@@ -196,6 +196,14 @@ Sorry, an Error occurred while reading the file properties:
     }
 }
 
+async function printDuration(duration){
+    if(isNaN(duration)){
+        return duration
+    } else {
+        return sf.convert(duration).format()
+    }
+}
+
 //This function will return a message that contains the loading bar using the progress.
 function buildLoadingMessage(progress) {
     let loadingBar = '';
@@ -276,19 +284,7 @@ Error: ${path.basename(videoPathAndName)} is not a video. returning..
 Got the video! Here's some information about your video:
 Name: ${toBeCompressedVideoDetails.name}
 Size: ${bytes(toBeCompressedVideoDetails.size)}
-Duration: ${
-/*
-This shitty library raise an error when passed some wrong values:
-```
-Error: The value should be integer number!
-at F.validateTheValue (/VideoSqueeze-CLI/node_modules/seconds-formater/dist/index.umd.js:1:2024)
-```
-works only with `.mp4` and not `.mkv`.
-`toBeCompressedVideoDetails.duration` is a value returned from ffprobe. check the function `getVideoinfo()`
-*/
-//sf.convert(toBeCompressedVideoDetails.duration).format()
-null
-}
+Duration: ${ await printDuration(toBeCompressedVideoDetails.duration) }
 location: ${path.resolve(videoPathAndName)}
 Date Created: ${toBeCompressedVideoDetails.dateCreated}
 Resolution: ${toBeCompressedVideoDetails.resolution}
@@ -661,7 +657,7 @@ Do you want to continue compressing?
     [2]: No, return to main menu
     [3]: List the uncompressed videos 
                 `)
-                continueChouce = prompt();
+                continueChouce = prompt().trim();
     
                 if(continueChouce == 1){
                     //isOkay = true;
