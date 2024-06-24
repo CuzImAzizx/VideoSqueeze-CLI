@@ -12,6 +12,7 @@ VideoSqueeze CLI is a simple JavaScript project that compresses a given video by
 - Resume from where you stopped compressing
 - Customizable compression profiles and presets
 - CPU limiter for controlling resource usage
+- View total compressed videos and saved space
 - Configuration file for easy customization
 
 
@@ -58,7 +59,8 @@ You will find `./config.json` file that contains the possible configuration and 
   "numberOfThreads": 0,
   "ffmpegCodec": "libx264",
   "compressAudioToo": false,
-  "compressionPreset": "faster"
+  "compressionPreset": "faster",
+  "compressionHistory": "./compression_log.json" 
 }
 ```
 
@@ -90,7 +92,17 @@ This is a toggle for compressing the audio stream of the video. By default it's 
 This is the preset for you video compression. A preset is a trade-off between encoding speed and compression ratio. By default it's set to `faster`. Which provide a quick compression time and reasonably reduced file size. Possible presets are:
 `"ultrafast"` `"veryfast"` `"faster"` `"fast"` `"medium"` `"slow"` `"slower"` `"veryslow"` `"placebo"`
 
+- **`"compressionHistory"`:**
 
+This is where all compressed video details are going to be stored for logging purposes. By default, the program will read and store them in a file named `compressionHistory.json`, wherever the program is running from.
+
+
+## Issues
+If you encountered any issues using VideoSqueeze-CLI, please create an issue in Github [using the following link](https://github.com/CuzImAzizx/VideoSqueeze-CLI/issues/new?assignees=&labels=bug&projects=&template=bug-report.md&title=Encountered+a+bug+while+using+VideoSqueeze-CLI). Your report will improve and enhance VideoSqueeze-CLI!
+
+
+## Share your experince
+If you find VideoSqueeze-CLI useful and would like to share your experience with the community, please share it [using the following link](https://github.com/CuzImAzizx/VideoSqueeze-CLI/discussions/new?category=share). Please include a screenshot or a copy of your terminal after printing the `[3]: View compression history` option. Feel free to write anything you like in your discussion message.
 
 
 ## FAQ
@@ -110,5 +122,18 @@ The other profiles are self-descriptive and optimized for specific scenarios.
 4. In the terminal window, click left-click to paste the path into the terminal.
 
 ![alt text](./img/context-menu.png)
+
+
+### I got an errro while trying to compress my videos
+If you encountered any issues using VideoSqueeze-CLI, please create an issue in Github [using the following link](https://github.com/CuzImAzizx/VideoSqueeze-CLI/issues/new?assignees=&labels=bug&projects=&template=bug-report.md&title=Encountered+a+bug+while+using+VideoSqueeze-CLI). Your report will improve and enhance VideoSqueeze-CLI!
+
+Alternatively, you can try the following troubleshooting:
+1. Try restarting the app.
+2. Try deleting the config file. It's located in `./config.json`. Then restart the app.
+3. Try deleting the compression history file. It's usally located in `./compression_log.json`. Then restart the app.
+4. Try deleteing compressed videos directory. It's usally located in `./compressed_videos`. Then restart the app.
+5. Try pulling/downloading the new project files from the repository.
+6. Start fresh. Download/clone the project from the start.
+
 
 .

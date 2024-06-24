@@ -1,6 +1,6 @@
 # Quick Guide For VideoSqueeze 
 
-By running the program, you will be asked to choose either you want to compress a single video, or compress a bunch of videos in a given directory.
+By running the program, you will be asked the following options:
 
 ```
 ┏╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍╍┑
@@ -21,6 +21,7 @@ Welcome to VideoSqueeze! Please select your option
 
 [1]: Compress a single video
 [2]: Compress a directory of videos
+[3]: View compression history
 [9]: Exit the program
 ```
 
@@ -165,5 +166,19 @@ directory's Size After compression: 5.57MB
 
 Press Enter to continue..
 
+
+```
+
+## View compression history
+To view the total videos that has been compressed using VideoSqueeze-CLI and the total saved space, type `3` in the main menu and press enter.
+After that, VideoSqueeze-CLI will print the total videos that has been compressed and the total saved space as following:
+```
+
+You have used VideoSqueeze-CLI to compress 69 videos.
+You have saved total of 420.0MB in space!
+You can see all the videos in ./compression_log.json
+
+
+Press any button to continue..
 
 ```

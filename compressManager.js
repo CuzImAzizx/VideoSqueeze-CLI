@@ -155,6 +155,7 @@ Do you want to overwrite the existing ${theThing} ${outputName}? (y/n)
 
 //This will return an object contains the video details
 async function getVideoinfo(videoPathAndName) {
+    videoPathAndName = path.resolve(videoPathAndName);
     try {
         const stats = fs.statSync(videoPathAndName)
         let obj = {}
@@ -171,7 +172,8 @@ This may be due to ${path.basename(videoPathAndName)} being a corrupted video.
                         return false
                     }
                     let videoStream = data.streams.find((stream) => stream.codec_type === 'video');
-                    obj.name = `${path.basename(videoPathAndName)}`
+                    obj.name = path.basename(videoPathAndName)
+                    obj.path = path.resolve(videoPathAndName)
                     obj.size = stats.size
                     obj.duration = videoStream.duration
                     obj.dateCreated = stats.birthtime.toDateString()
@@ -247,6 +249,28 @@ You might want to try a different compressing profile.
         `)
     }
     return
+}
+
+//This will put the data in compression_log.json file.
+async function logInfo(oldVideo, newVideo, compressionProfile){
+    const config = readConfig()
+    let logData = JSON.parse(fs.readFileSync(config.compressionHistory))
+    logData.push({
+        oldVideo: {
+            name: oldVideo.name,
+            path: oldVideo.path,
+            size: oldVideo.size
+        },
+        newVideo: {
+            name: newVideo.name,
+            path: newVideo.path,
+            size: newVideo.size,
+            compressionProfile: compressionProfile
+        }
+    })
+    logData = JSON.stringify(logData, null, 2);
+    fs.writeFileSync(config.compressionHistory, logData);
+    console.log(`The data has been logged in ${config.compressionHistory}`)
 }
 
 //This is option 1: compress a single video
@@ -577,11 +601,12 @@ The video has been compressed!
     const compressedVideoDetails = await getVideoinfo(`${config.compressionPath}/${outputName}`)
     let sizeBefore = toBeCompressedVideoDetails.size
     let sizeAfter = compressedVideoDetails.size
+    await logInfo(toBeCompressedVideoDetails, compressedVideoDetails, profileChoice)
     printSizeDiff(sizeBefore, sizeAfter, false)
     return true
 }
 
-
+//This is option 2: Compress a directory of videos
 async function compressDirectory() {
 
     const config = readConfig()
@@ -768,12 +793,17 @@ Video ${i + 1} out of ${videosToCompress.length}
 ${buildLoadingMessage(progress)}
                         `);
                     })                                    
-                    command.on('end', () => {
+                    command.on('end', async () => {
                         let jsonString = fs.readFileSync(`${config.compressionPath}/${dirOutputName}/compressionProgress.json`, "UTF8")
                         let compressionProgress = JSON.parse(jsonString)
                         compressionProgress.push(individualVideoToCompressName)
                         jsonString = JSON.stringify(compressionProgress, null, 2)
                         fs.writeFileSync(`${config.compressionPath}/${dirOutputName}/compressionProgress.json`, jsonString)
+                        
+                        let oldVideo = await getVideoinfo(`${PathToCompress}/${videosToCompress[i]}`);
+                        let newVideo = await getVideoinfo(`${config.compressionPath}/${dirOutputName}/${individualVideoToCompressName}`);
+                        await logInfo(oldVideo, newVideo, profileChoice);
+                        
                         console.log(`
 The video number ${i + 1} has been compressed!
         It's located in: ${path.resolve(`${config.compressionPath}/${dirOutputName}/${individualVideoToCompressName}`)}
@@ -826,15 +856,20 @@ Video ${i + 1} out of ${videosToCompress.length}
 ${buildLoadingMessage(progress)}
                         `);
                     })                                    
-                    command.on('end', () => {
+                    command.on('end', async () => {
                         let jsonString = fs.readFileSync(`${config.compressionPath}/${dirOutputName}/compressionProgress.json`, "UTF8")
                         let compressionProgress = JSON.parse(jsonString)
                         compressionProgress.push(individualVideoToCompressName)
                         jsonString = JSON.stringify(compressionProgress, null, 2)
                         fs.writeFileSync(`${config.compressionPath}/${dirOutputName}/compressionProgress.json`, jsonString)
+                        
+                        let oldVideo = await getVideoinfo(`${PathToCompress}/${videosToCompress[i]}`);
+                        let newVideo = await getVideoinfo(`${config.compressionPath}/${dirOutputName}/${individualVideoToCompressName}`);
+                        await logInfo(oldVideo, newVideo, profileChoice);
+                        
                         console.log(`
 The video number ${i + 1} has been compressed!
-    It's located in     It's located in: ${path.resolve(`${config.compressionPath}/${dirOutputName}/${individualVideoToCompressName}`)}
+    It's located in: ${path.resolve(`${config.compressionPath}/${dirOutputName}/${individualVideoToCompressName}`)}
                         
                         
                         
@@ -885,12 +920,17 @@ Video ${i + 1} out of ${videosToCompress.length}
 ${buildLoadingMessage(progress)}
                         `);
                     })                                    
-                    command.on('end', () => {
+                    command.on('end', async () => {
                         let jsonString = fs.readFileSync(`${config.compressionPath}/${dirOutputName}/compressionProgress.json`, "UTF8")
                         let compressionProgress = JSON.parse(jsonString)
                         compressionProgress.push(individualVideoToCompressName)
                         jsonString = JSON.stringify(compressionProgress, null, 2)
                         fs.writeFileSync(`${config.compressionPath}/${dirOutputName}/compressionProgress.json`, jsonString)
+                        
+                        let oldVideo = await getVideoinfo(`${PathToCompress}/${videosToCompress[i]}`);
+                        let newVideo = await getVideoinfo(`${config.compressionPath}/${dirOutputName}/${individualVideoToCompressName}`);
+                        await logInfo(oldVideo, newVideo, profileChoice);
+
                         console.log(`
 The video number ${i + 1} has been compressed!
         It's located in: ${path.resolve(`${config.compressionPath}/${dirOutputName}/${individualVideoToCompressName}`)}
@@ -944,12 +984,17 @@ Video ${i + 1} out of ${videosToCompress.length}
 ${buildLoadingMessage(progress)}
                         `);
                     })                                    
-                    command.on('end', () => {
+                    command.on('end', async () => {
                         let jsonString = fs.readFileSync(`${config.compressionPath}/${dirOutputName}/compressionProgress.json`, "UTF8")
                         let compressionProgress = JSON.parse(jsonString)
                         compressionProgress.push(individualVideoToCompressName)
                         jsonString = JSON.stringify(compressionProgress, null, 2)
                         fs.writeFileSync(`${config.compressionPath}/${dirOutputName}/compressionProgress.json`, jsonString)
+                        
+                        let oldVideo = await getVideoinfo(`${PathToCompress}/${videosToCompress[i]}`);
+                        let newVideo = await getVideoinfo(`${config.compressionPath}/${dirOutputName}/${individualVideoToCompressName}`);
+                        await logInfo(oldVideo, newVideo, profileChoice);
+
                         console.log(`
 The video number ${i + 1} has been compressed!
         It's located in: ${path.resolve(`${config.compressionPath}/${dirOutputName}/${individualVideoToCompressName}`)}
@@ -1002,12 +1047,17 @@ Video ${i + 1} out of ${videosToCompress.length}
 ${buildLoadingMessage(progress)}
                         `);
                     })                                    
-                    command.on('end', () => {
+                    command.on('end', async () => {
                         let jsonString = fs.readFileSync(`${config.compressionPath}/${dirOutputName}/compressionProgress.json`, "UTF8")
                         let compressionProgress = JSON.parse(jsonString)
                         compressionProgress.push(individualVideoToCompressName)
                         jsonString = JSON.stringify(compressionProgress, null, 2)
                         fs.writeFileSync(`${config.compressionPath}/${dirOutputName}/compressionProgress.json`, jsonString)
+                        
+                        let oldVideo = await getVideoinfo(`${PathToCompress}/${videosToCompress[i]}`);
+                        let newVideo = await getVideoinfo(`${config.compressionPath}/${dirOutputName}/${individualVideoToCompressName}`);
+                        await logInfo(oldVideo, newVideo, profileChoice);
+
                         console.log(`
 The video number ${i + 1} has been compressed!
         It's located in: ${path.resolve(`${config.compressionPath}/${dirOutputName}/${individualVideoToCompressName}`)}
@@ -1078,12 +1128,17 @@ Video ${i + 1} out of ${videosToCompress.length}
 ${buildLoadingMessage(progress)}
                         `);
                     })                                    
-                    command.on('end', () => {
+                    command.on('end', async () => {
                         let jsonString = fs.readFileSync(`${config.compressionPath}/${dirOutputName}/compressionProgress.json`, "UTF8")
                         let compressionProgress = JSON.parse(jsonString)
                         compressionProgress.push(individualVideoToCompressName)
                         jsonString = JSON.stringify(compressionProgress, null, 2)
                         fs.writeFileSync(`${config.compressionPath}/${dirOutputName}/compressionProgress.json`, jsonString)
+                        
+                        let oldVideo = await getVideoinfo(`${PathToCompress}/${videosToCompress[i]}`);
+                        let newVideo = await getVideoinfo(`${config.compressionPath}/${dirOutputName}/${individualVideoToCompressName}`);
+                        await logInfo(oldVideo, newVideo, profileChoice);
+
                         console.log(`
 The video number ${i + 1} has been compressed!
         It's located in: ${path.resolve(`${config.compressionPath}/${dirOutputName}/${individualVideoToCompressName}`)}
@@ -1132,11 +1187,43 @@ The error mesage: ${error.message}
     return;
 }
 
+//This is option 3: View compression history
+async function printLog(){
+    const config = readConfig()
+    let log_path = `./compression_log.json`;
+    let logFile = JSON.parse(fs.readFileSync(config.compressionHistory))
+    if(logFile.length == 0){
+        console.log("You haven't compressed any video using VideoSqueeze-CLI");
+        return;
+    }
+    let totalOldSize = 0;
+    let totalNewSize = 0;
+    for(i = 0; i < logFile.length; i++){
+        totalOldSize += logFile[i].oldVideo.size;
+        totalNewSize += logFile[i].newVideo.size;
+    }
+    let totalSaved = totalOldSize - totalNewSize;
+    if(totalSaved < 0){
+        console.log(`
+This is wierd, you compressed ${logFile.length} videos using VideoSqueeze-CLI, but somehow you gained ${bytes(Math.abs(totalSaved))} in space.
+You can see all the videos in ${config.compressionHistory}
+`);
+        return;
+    }
+    console.log(`
+You have used VideoSqueeze-CLI to compress ${logFile.length} videos.
+You have saved total of ${bytes((totalOldSize - totalNewSize))} in space!
+You can see all the videos in ${config.compressionHistory}
+    `)
+return;
+}
+
 
 
 module.exports = {
     compressVideo,
-    compressDirectory
+    compressDirectory,
+    printLog
 }
 
 

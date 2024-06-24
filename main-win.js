@@ -4,7 +4,7 @@ to be run on Windows only.
 */
 
 const prompt = require("prompt-sync")({ sigint: true })
-const { compressVideo, compressDirectory } = require('./compressManager.js');
+const { compressVideo, compressDirectory, printLog } = require('./compressManager.js');
 const fs = require('fs')
 const path = require('path');
 const ffmpeg = require('fluent-ffmpeg')
@@ -34,23 +34,63 @@ Welcome to VideoSqueeze! Please select your option
 
 [1]: Compress a single video
 [2]: Compress a directory of videos
+[3]: View compression history
 [9]: Exit the program
 `)
     let option = prompt()
     option.trim()
-    if (option == 1) {
-        await compressVideo()
-    } else if (option == 2) {
-        await compressDirectory()
-    } else if (option == 9) {
+    try {
+        if (option == 1) {
+            await compressVideo()
+        } else if (option == 2) {
+            await compressDirectory()
+        } else if (option == 3) {
+            await printLog();
+        } else if (option == 9) {
+            console.log(`
+    Good bye <3
+            `)
+            process.exit(0)
+        } else {
+            console.log(`
+    ${option} is an invalid entry..
+            `)
+        }    
+    } catch(error){
         console.log(`
-Good bye <3
-        `)
-        process.exit(0)
-    } else {
-        console.log(`
-${option} is an invalid entry..
-        `)
+\n\n
+##############################################################################################
+An Error occured.
+Sorry, but an unexpected error occured while processing your video. This might because a bug in the code.
+Here's the error message:
+
+\`\`\`
+${error}
+\`\`\`
+
+Please share this with me in github using the following link:
+https://github.com/CuzImAzizx/VideoSqueeze-CLI/issues/new?assignees=&labels=bug&projects=&template=bug-report.md&title=Encountered+a+bug+while+using+VideoSqueeze-CLI
+
+Alternatively, you can try following these troubleshooting steps:
+    1: Try restarting the app
+
+    2: Try deleting the config file, then restart the app.
+        It's located in "./config.json"
+
+    3: Try deleting the compression history file, then restart the app.
+        It's usally located in "./compression_log.json" 
+    
+    4: Try deleting the compression history file. Then restart the app.
+        It's usally located in "./compression_log.json"
+
+    5: Try pulling/downloading the new project files from the repository.
+        The link to the repo: https://github.com/CuzImAzizx/VideoSqueeze-CLI
+
+    6: Start fresh.
+        Download/clone the project from the start.
+##############################################################################################
+\n\n
+`)
     }
     pause()
     start()
@@ -89,7 +129,8 @@ Warning: Didn't find ./config.json
         numberOfThreads: 0,
         ffmpegCodec: "libx264",
         compressAudioToo: false,
-        compressionPreset: "faster"      
+        compressionPreset: "faster",
+        compressionHistory: "./compression_log.json"
     }
     try{
         let jsonString = JSON.stringify(defaultConfiguration, null, 2)
@@ -129,6 +170,30 @@ console.log(`
 ./config.json is successfully loaded
 `)
 
+// Create compression_log.json if it doesn't exist.
+if(!fs.existsSync(configFile.compressionHistory)){
+    console.log(`
+Warning: Didn't find ${configFile.compressionHistory}
+    Creating ${configFile.compressionHistory} with empty log.. 
+    `)   
+    try {
+        fs.writeFileSync(configFile.compressionHistory, `[]`);
+        console.log(`
+Successfully created ${configFile.compressionHistory}
+        `);    
+    } catch(error) {
+        console.log(`
+Couldn't create ${configFile.compressionHistory}
+    ${error}
+        `)            
+    }   
+}
+console.log(`
+${configFile.compressionHistory} is successfully loaded
+`)
+
+
+//If compression directory isn't there, the app will create it.
 if(!fs.existsSync(`${configFile.compressionPath}`)){
     console.log(`
 Warning: Didn't find ${configFile.compressionPath}
@@ -142,14 +207,13 @@ Successfully created ${configFile.compressionPath}
   
     } catch (error) {
         console.error(`
-Error creating ${configFile.compressionPath}:
+Couldn't create ${configFile.compressionPath}:
     ${error}
         `);
         console.log("Press enter to exit")
         prompt()    
         process.exit(1);
       }    
-    //The rest of the code
 }
 
 console.log(`
