@@ -20,7 +20,7 @@ VideoSqueeze CLI is a simple JavaScript project that compresses a given video by
 To install VideoSqueezer CLI, you have two options:
 
 ### Option 1: Windows Release
-1. Download the [Windows release](https://github.com/CuzImAzizx/VideoSqueeze-CLI/releases/tag/v1.0.0).
+1. Download the [Windows release](https://github.com/CuzImAzizx/VideoSqueeze-CLI/releases/tag/v1.2.0).
 2. Extract the downloaded archive.
 3. Open the extracted folder and locate the `VideoSqueezeCLI.exe` file.
 4. Double-click on `VideoSqueezeCLI.exe` to launch the CLI tool.
@@ -124,10 +124,10 @@ The other profiles are self-descriptive and optimized for specific scenarios.
 ![alt text](./img/context-menu.png)
 
 
-### I got an errro while trying to compress my videos
+### I got an error while trying to compress my videos
 If you encountered any issues using VideoSqueeze-CLI, please create an issue in Github [using the following link](https://github.com/CuzImAzizx/VideoSqueeze-CLI/issues/new?assignees=&labels=bug&projects=&template=bug-report.md&title=Encountered+a+bug+while+using+VideoSqueeze-CLI). Your report will improve and enhance VideoSqueeze-CLI!
 
-Alternatively, you can try the following troubleshooting:
+Alternatively, you can try the following troubleshooting steps:
 1. Try restarting the app.
 2. Try deleting the config file. It's located in `./config.json`. Then restart the app.
 3. Try deleting the compression history file. It's usally located in `./compression_log.json`. Then restart the app.
